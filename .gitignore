@@ -21,8 +21,6 @@ lib
 lib64
 __pycache__
 
-# Installer logs
-pip-log.txt
 
 # Django
 default.db
