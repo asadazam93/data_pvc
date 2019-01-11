@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from django.views.generic import View
+from django.views.generic import View, DetailView
 
-from bills.models import Client
+from bills.models import Client, Bill
 
 
 class HomeView(View):
@@ -13,3 +13,7 @@ class HomeView(View):
         amount = sum([client.debit for client in clients])
         context["amount"] = amount
         return render(request, template_name=self.template, context=context)
+
+
+class BillView(DetailView):
+    model = Bill

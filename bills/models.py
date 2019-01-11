@@ -1,5 +1,7 @@
 from django.db import models
 from django.utils import timezone
+from django.urls import reverse
+from django.utils.html import mark_safe
 
 
 class Client(models.Model):
@@ -63,6 +65,10 @@ class Bill(models.Model):
         client.save()
         self.date = timezone.now()
         super(Bill, self).save(*args, **kwargs)
+
+    def pdf_link(self):
+        return mark_safe('<a class="grp-button" href="%s" target="blank">view bill</a>' % reverse('bill_view', args=[self.id]))
+    pdf_link.short_description = 'PDF'
 
 
 class BillItem(models.Model):

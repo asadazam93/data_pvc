@@ -24,7 +24,7 @@ class ProductAdmin(admin.ModelAdmin):
 @admin.register(Bill)
 class BillAdmin(admin.ModelAdmin):
     inlines = (BillItemInline,)
-    list_display = ("id", "client", "date", "total_bill", "total_weight")
+    list_display = ("id", "client", "date", "total_bill", "total_weight", "pdf_link")
     search_fields = ("client__name",)
     list_filter = ("client__name", ('date', DateRangeFilter))
 

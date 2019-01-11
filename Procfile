@@ -1,0 +1,1 @@
+web: gunicorn data_pvc.wsgi --log-file -

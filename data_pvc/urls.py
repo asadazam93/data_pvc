@@ -16,9 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from bills.views import HomeView
+from bills.views import HomeView, BillView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', HomeView.as_view(), name="home_view")
+    path('', HomeView.as_view(), name="home_view"),
+    path('bill/<pk>/', BillView.as_view(), name="bill_view")
 ]
