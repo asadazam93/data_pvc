@@ -20,7 +20,7 @@ def save_billitem(sender, instance, **kwargs):
         quantity_sold = sum([bill_item.quantity for bill_item in bill_items])
         bill_items_purchase = product.bill_items.filter(bill__client__type="Supplier")
         quantity_purchased = sum([bill_item.quantity for bill_item in bill_items_purchase])
-        inventory_item.stock += quantity_purchased - quantity_sold
+        inventory_item.stock = inventory_item.initial_stock + quantity_purchased - quantity_sold
         inventory_item.save()
     except InventoryItem.DoesNotExist:
         pass

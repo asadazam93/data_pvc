@@ -15,8 +15,9 @@ class InventoryItemInline(admin.TabularInline):
 
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "address", "number", "debit", "type", "previous_credit")
+    list_display = ("id", "name", "address", "number", "debit", "type", "previous_credit", "paid_last_seven_days")
     search_fields = ("name", "number", "address")
+    list_filter = ("type",)
 
 
 @admin.register(Product)

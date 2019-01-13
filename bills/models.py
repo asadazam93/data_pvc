@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from datetime import timedelta
 from django.urls import reverse
 from django.utils.html import mark_safe
 
@@ -23,6 +24,14 @@ class Client(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def paid_last_seven_days(self):
+        current_date = timezone.now()
+        date_seven_days_back = current_date - timedelta(days=7)
+        if ClientPayment.objects.filter(date__range=[date_seven_days_back, current_date], client=self):
+            return "Yes"
+        return "Not Paid"
 
 
 class Product(models.Model):
@@ -144,6 +153,7 @@ class InventoryItem(models.Model):
         on_delete=models.CASCADE
     )
     stock = models.IntegerField(default=0)
+    initial_stock = models.IntegerField(default=0)
 
     def __str__(self):
         return self.product.name + ': ' + str(self.stock)
