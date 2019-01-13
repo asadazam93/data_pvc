@@ -1,0 +1,45 @@
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+    		<div class="invoice-title">
+    			<h2>Inventory</h2><h3 class="pull-right">Stock Detail</h3>
+    		</div>
+    		<hr>
+    	</div>
+    </div>
+
+    <div class="row">
+    	<div class="col-md-12">
+    		<div class="panel panel-default">
+    			<div class="panel-heading">
+    				<h3 class="panel-title"><strong>Stock summary</strong></h3>
+    			</div>
+    			<div class="panel-body">
+    				<div class="table-responsive">
+    					<table class="table table-condensed">
+    						<thead>
+                                <tr>
+        							<td><strong>Product</strong></td>
+        							<td class="text-center"><strong>Quantity</strong></td>
+                                </tr>
+    						</thead>
+    						<tbody>
+                                {% for item in object.inventoryitems.all %}
+    							<tr>
+    								<td>{{ item.product }}</td>
+    								<td class="text-center">{{ item.stock }}</td>
+    							</tr>
+                                {% endfor %}
+    						</tbody>
+    					</table>
+    				</div>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+</div>

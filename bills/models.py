@@ -6,9 +6,20 @@ from django.utils.html import mark_safe
 
 class Client(models.Model):
     name = models.CharField(max_length=255)
+    type = models.CharField(max_length=100, choices=(('Client', 'Client'), ('Supplier', 'Supplier')))
     address = models.CharField(max_length=512, blank=True, null=True)
     number = models.CharField(max_length=20, blank=True, null=True)
-    debit = models.IntegerField(default=0)
+    debit = models.IntegerField(default=0, verbose_name="Debit/Credit")
+    previous_credit = models.IntegerField(default=0)
+
+    def save(self, *args, **kwargs):
+
+        client_payments = self.client_payments.all()
+        paid = sum([client_payment.payment for client_payment in client_payments])
+        client_bills = self.bills.all()
+        bills = sum([bill.total_bill for bill in client_bills])
+        self.debit = self.previous_credit + bills - paid
+        super(Client, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -22,7 +33,7 @@ class Product(models.Model):
 
     @property
     def price(self):
-        return int(self.price_per_kg*self.weight)
+        return int(self.price_per_kg * self.weight)
 
     def __str__(self):
         return self.name + ": " + self.type
@@ -56,18 +67,13 @@ class Bill(models.Model):
         return self.client.name + " bill: " + str(self.total_bill)
 
     def save(self, *args, **kwargs):
-        client = self.client
-        client_payments = client.client_payments.all()
-        paid = sum([client_payment.payment for client_payment in client_payments])
-        client_bills = client.bills.all()
-        bills = sum([bill.total_bill for bill in client_bills])
-        client.debit = bills - paid
-        client.save()
         self.date = timezone.now()
         super(Bill, self).save(*args, **kwargs)
 
     def pdf_link(self):
-        return mark_safe('<a class="grp-button" href="%s" target="blank">view bill</a>' % reverse('bill_view', args=[self.id]))
+        return mark_safe(
+            '<a class="grp-button" href="%s" target="blank">view bill</a>' % reverse('bill_view', args=[self.id]))
+
     pdf_link.short_description = 'PDF'
 
 
@@ -109,12 +115,35 @@ class ClientPayment(models.Model):
         return self.client.name + " Paid: " + str(self.payment)
 
     def save(self, *args, **kwargs):
-        client = self.client
-        client_payments = client.client_payments.all()
-        paid = sum([client_payment.payment for client_payment in client_payments])
-        client_bills = client.bills.all()
-        bills = sum([bill.total_bill for bill in client_bills])
-        client.debit = bills - paid
-        client.save()
         self.date = timezone.now()
         super(ClientPayment, self).save(*args, **kwargs)
+
+
+class Inventory(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+    def pdf_link(self):
+        return mark_safe(
+            '<a class="grp-button" href="%s" target="blank">view inventory</a>' % reverse('inventory_view', args=[self.id]))
+
+    pdf_link.short_description = 'PDF'
+
+
+class InventoryItem(models.Model):
+    product = models.OneToOneField(
+        Product,
+        related_name="inventory_item",
+        on_delete=models.CASCADE
+    )
+    inventory = models.ForeignKey(
+        Inventory,
+        related_name="inventoryitems",
+        on_delete=models.CASCADE
+    )
+    stock = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.product.name + ': ' + str(self.stock)

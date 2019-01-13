@@ -1,5 +1,5 @@
 from django.contrib import admin
-from bills.models import Client, ClientPayment, Bill, BillItem, Product
+from bills.models import Client, ClientPayment, Bill, BillItem, Product, InventoryItem, Inventory
 from rangefilter.filter import DateRangeFilter
 
 
@@ -8,9 +8,14 @@ class BillItemInline(admin.TabularInline):
     extra = 1
 
 
+class InventoryItemInline(admin.TabularInline):
+    model = InventoryItem
+    extra = 1
+
+
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "address", "number", "debit")
+    list_display = ("id", "name", "address", "number", "debit", "type", "previous_credit")
     search_fields = ("name", "number", "address")
 
 
@@ -27,6 +32,12 @@ class BillAdmin(admin.ModelAdmin):
     list_display = ("id", "client", "date", "total_bill", "total_weight", "pdf_link")
     search_fields = ("client__name",)
     list_filter = ("client__name", ('date', DateRangeFilter))
+
+
+@admin.register(Inventory)
+class InventoryAdmin(admin.ModelAdmin):
+    inlines = (InventoryItemInline,)
+    list_display = ("id", "name", "pdf_link")
 
 
 @admin.register(ClientPayment)
