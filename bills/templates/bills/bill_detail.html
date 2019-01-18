@@ -6,97 +6,108 @@
 <div class="container">
     <div class="row">
         <div class="col-xs-12">
-    		<div class="invoice-title">
-    			<h2>Invoice</h2><h3 class="pull-right">Order # {{ bill.id }}</h3>
-    		</div>
-    		<hr>
-    		<div class="row">
-    			<div class="col-xs-6">
-    				<address>
-    				<strong>Billed To:</strong><br>
-    					{{ object.client.name }}<br>
+            <div class="invoice-title">
+                <h2>
+                    {% if bill.type == 'Sale' %}
+                        Invoice (Sale)
+                    {% else %}
+                        Invoice (Purchase)
+                    {% endif %}
+                </h2>
+                <h3 class="pull-right">Order # {{ bill.id }}</h3>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-xs-6">
+                    <address>
+                        <strong>Billed To:</strong><br>
+                        {{ object.client.name }}<br>
                         {{ object.client.address }}
-    				</address>
-    			</div>
-    			<div class="col-xs-6 text-right">
-    				<address>
-        			<strong>Shipped To:</strong><br>
-    					{{ object.client.name }}<br>
+                    </address>
+                </div>
+                <div class="col-xs-6 text-right">
+                    <address>
+                        <strong>Shipped To:</strong><br>
+                        {{ object.client.name }}<br>
                         {{ object.client.address }}
-    				</address>
-    			</div>
-    		</div>
-    		<div class="row">
-    			<div class="col-xs-6">
-    				<address>
-    					<strong>Payment Method:</strong><br>
-    					Cash<br>
-    				</address>
-    			</div>
-    			<div class="col-xs-6 text-right">
-    				<address>
-    					<strong>Order Date:</strong><br>
-    					{{ bill.date }}<br><br>
-    				</address>
-    			</div>
-    		</div>
-    	</div>
+                    </address>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6">
+                    <address>
+                        <strong>Payment Method:</strong><br>
+                        Cash<br>
+                    </address>
+                </div>
+                <div class="col-xs-6 text-right">
+                    <address>
+                        <strong>Order Date:</strong><br>
+                        {{ bill.date }}<br><br>
+                    </address>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="row">
-    	<div class="col-md-12">
-    		<div class="panel panel-default">
-    			<div class="panel-heading">
-    				<h3 class="panel-title"><strong>Order summary</strong></h3>
-    			</div>
-    			<div class="panel-body">
-    				<div class="table-responsive">
-    					<table class="table table-condensed">
-    						<thead>
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><strong>Order summary</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-condensed">
+                            <thead>
+                            <tr>
+                                <td><strong>Item</strong></td>
+                                <td class="text-center"><strong>Price</strong></td>
+                                <td class="text-center"><strong>Quantity</strong></td>
+                                <td class="text-center"><strong>Weight</strong></td>
+                                <td class="text-right"><strong>Totals</strong></td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in object.billitems.all %}
                                 <tr>
-        							<td><strong>Item</strong></td>
-        							<td class="text-center"><strong>Price</strong></td>
-        							<td class="text-center"><strong>Quantity</strong></td>
-                                    <td class="text-center"><strong>Weight</strong></td>
-        							<td class="text-right"><strong>Totals</strong></td>
-                                </tr>
-    						</thead>
-    						<tbody>
-                                {% for item in object.billitems.all %}
-    							<tr>
-    								<td>{{ item.product }}</td>
-    								<td class="text-center">PKR {{ item.product.price }}</td>
-    								<td class="text-center">{{ item.quantity }}</td>
+                                    <td>{{ item.product }}</td>
+                                    {% if bill.type == 'Sale' %}
+                                        <td class="text-center">PKR {{ item.product.sale_price }}</td>
+                                    {% else %}
+                                        <td class="text-center">PKR {{ item.product.price }}</td>
+                                    {% endif %}
+                                    <td class="text-center">{{ item.quantity }}</td>
                                     <td class="text-center">{{ item.total_weight }}</td>
-    								<td class="text-right">PKR {{ item.total_price }}</td>
-    							</tr>
-                                {% endfor %}
-                                <tr>
-    								<td class="no-line"></td>
-    								<td class="no-line"></td>
-                                    <td class="no-line"></td>
-    								<td class="no-line"></td>
-    								<td class="no-line"></td>
-    							</tr>
-    							<tr>
-    								<td class="no-line"></td>
-    								<td class="no-line"></td>
-                                    <td class="no-line"></td>
-    								<td class="no-line text-center"><strong>Total Weight</strong></td>
-    								<td class="no-line text-right">{{ object.total_weight }}</td>
-    							</tr>
-    							<tr>
-    								<td class="no-line"></td>
-    								<td class="no-line"></td>
-                                    <td class="no-line"></td>
-    								<td class="no-line text-center"><strong>Total</strong></td>
-    								<td class="no-line text-right">PKR {{ object.total_bill }}</td>
-    							</tr>
-    						</tbody>
-    					</table>
-    				</div>
-    			</div>
-    		</div>
-    	</div>
+                                    <td class="text-right">PKR {{ item.total_price }}</td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td class="no-line"></td>
+                                <td class="no-line"></td>
+                                <td class="no-line"></td>
+                                <td class="no-line"></td>
+                                <td class="no-line"></td>
+                            </tr>
+                            <tr>
+                                <td class="no-line"></td>
+                                <td class="no-line"></td>
+                                <td class="no-line"></td>
+                                <td class="no-line text-center"><strong>Total Weight</strong></td>
+                                <td class="no-line text-right">{{ object.total_weight }}</td>
+                            </tr>
+                            <tr>
+                                <td class="no-line"></td>
+                                <td class="no-line"></td>
+                                <td class="no-line"></td>
+                                <td class="no-line text-center"><strong>Total</strong></td>
+                                <td class="no-line text-right">PKR {{ object.total_bill }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

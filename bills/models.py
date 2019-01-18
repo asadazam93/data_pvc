@@ -38,11 +38,16 @@ class Product(models.Model):
     type = models.CharField(max_length=128)
     name = models.CharField(max_length=128)
     price_per_kg = models.IntegerField()
+    price_per_kg_sale = models.IntegerField()
     weight = models.FloatField()
 
     @property
     def price(self):
         return int(self.price_per_kg * self.weight)
+
+    @property
+    def sale_price(self):
+        return int(self.price_per_kg_sale * self.weight)
 
     def __str__(self):
         return self.name + ": " + self.type
@@ -55,6 +60,11 @@ class Bill(models.Model):
         related_name="bills"
     )
     date = models.DateTimeField(auto_now_add=True)
+    type = models.CharField(
+        choices=(('Sale', 'Sale'), ('Purchase', 'Purchase')),
+        max_length=20,
+        default='Sale'
+    )
 
     @property
     def total_bill(self):
@@ -101,11 +111,18 @@ class BillItem(models.Model):
 
     @property
     def total_price(self):
-        return self.product.price * self.quantity
+        if self.bill.type == 'Sale':
+            return self.product.sale_price * self.quantity
+
 
     @property
     def total_weight(self):
         return self.product.weight * self.quantity
+
+    @property
+    def profit(self):
+        if self.bill.type == 'Sale':
+            return self.product.sale_price * self.quantity - self.product.price * self.quantity
 
     def __str__(self):
         return self.product.__str__() + " Q: " + str(self.quantity)
