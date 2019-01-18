@@ -22,9 +22,9 @@ class ClientAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ("id", "type", "name", "price_per_kg", "weight", "price")
-    list_filter = ("type",)
-    search_fields = ("name",)
+    list_display = ("id", "type", "name", "price_per_kg", "weight", "price", "price_per_kg_sale", "brand")
+    list_filter = ("type", "brand")
+    search_fields = ("name", "brand")
 
 
 @admin.register(Bill)
