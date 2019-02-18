@@ -62,7 +62,8 @@
                             <thead>
                             <tr>
                                 <td><strong>Item</strong></td>
-                                <td class="text-center"><strong>Price</strong></td>
+                                <td class="text-center"><strong>Price/unit</strong></td>
+                                <td class="text-center"><strong>Price/kg</strong></td>
                                 <td class="text-center"><strong>Quantity</strong></td>
                                 <td class="text-center"><strong>Weight</strong></td>
                                 <td class="text-right"><strong>Totals</strong></td>
@@ -72,11 +73,8 @@
                             {% for item in object.billitems.all %}
                                 <tr>
                                     <td>{{ item.product }}</td>
-                                    {% if bill.type == 'Sale' %}
-                                        <td class="text-center">PKR {{ item.product.sale_price }}</td>
-                                    {% else %}
-                                        <td class="text-center">PKR {{ item.product.price }}</td>
-                                    {% endif %}
+                                    <td class="text-center">PKR {{ item.price }}</td>
+                                    <td class="text-center">PKR {{ item.price_per_kg }}</td>
                                     <td class="text-center">{{ item.quantity }}</td>
                                     <td class="text-center">{{ item.total_weight }}</td>
                                     <td class="text-right">PKR {{ item.total_price }}</td>
@@ -88,8 +86,10 @@
                                 <td class="no-line"></td>
                                 <td class="no-line"></td>
                                 <td class="no-line"></td>
+                                <td class="no-line"></td>
                             </tr>
                             <tr>
+                                <td class="no-line"></td>
                                 <td class="no-line"></td>
                                 <td class="no-line"></td>
                                 <td class="no-line"></td>
@@ -97,6 +97,7 @@
                                 <td class="no-line text-right">{{ object.total_weight }}</td>
                             </tr>
                             <tr>
+                                <td class="no-line"></td>
                                 <td class="no-line"></td>
                                 <td class="no-line"></td>
                                 <td class="no-line"></td>

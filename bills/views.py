@@ -15,9 +15,6 @@ class HomeView(View):
         buyers = Client.objects.filter(type='Supplier')
         debit = sum([buyer.debit for buyer in buyers])
         context["debit"] = debit
-        bill_items = BillItem.objects.filter(bill__type='Sale')
-        profit = sum([bill_item.profit for bill_item in bill_items])
-        context['profit'] = profit
         return render(request, template_name=self.template, context=context)
 
 

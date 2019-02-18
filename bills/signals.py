@@ -4,7 +4,6 @@ from bills.models import BillItem, ClientPayment, InventoryItem
 
 
 def save_billitem(sender, instance, **kwargs):
-    print("called")
     bill = instance.bill
     client = bill.client
     client_payments = client.client_payments.all()

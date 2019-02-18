@@ -112,21 +112,19 @@ class BillItem(models.Model):
         on_delete=models.CASCADE,
     )
     quantity = models.IntegerField()
+    price_per_kg = models.IntegerField()
+
+    @property
+    def price(self):
+        return self.product.weight * self.price_per_kg
 
     @property
     def total_price(self):
-        if self.bill.type == 'Sale':
-            return self.product.sale_price * self.quantity
-        return self.product.price * self.quantity
+        return self.price * self.quantity
 
     @property
     def total_weight(self):
         return self.product.weight * self.quantity
-
-    @property
-    def profit(self):
-        if self.bill.type == 'Sale':
-            return self.product.sale_price * self.quantity - self.product.price * self.quantity
 
     def __str__(self):
         return self.product.__str__() + " Q: " + str(self.quantity)

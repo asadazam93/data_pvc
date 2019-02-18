@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'data_pvc.wsgi.application'
 
 DATABASES = {
     'default': {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "ENGINE": "django.db.backends.postgresql_psycopg2"
     }
 }
 
